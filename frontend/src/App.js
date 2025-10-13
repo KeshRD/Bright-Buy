@@ -5,12 +5,15 @@ import AuthPage from './components/AuthPage';
 import HomePage from './components/HomePage';
 import ProductDetail from './components/ProductDetail';
 import CartPage from './components/CartPage';
+import AdminPage from './components/AdminPage';
+
 import './App.css';
 
 function App() {
   return (
     <div className="App">
       <Routes>
+        <Route path="/admin" element={<AdminPage />} />
         <Route path="/" element={<AuthPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/product/:productId" element={<ProductDetail />} />

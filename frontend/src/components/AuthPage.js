@@ -1,4 +1,4 @@
-// src/components/AuthPage.js (Updated: Handle token and user storage, auto-redirect if logged in)
+// src/components/AuthPage.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -13,9 +13,17 @@ const AuthPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  // Auto-redirect if already logged in
   useEffect(() => {
-    if (localStorage.getItem('token')) {
-      navigate('/home');
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    if (token && user) {
+      if (user.role === 'Admin') {
+        navigate('/admin');
+      } else {
+        navigate('/home');
+      }
     }
   }, [navigate]);
 
@@ -24,14 +32,23 @@ const AuthPage = () => {
     setError('');
 
     if (isLogin) {
-      // Login
+      // === LOGIN ===
       try {
         const response = await axios.post('http://localhost:5000/login', { email, password });
         if (response.data.success) {
+          const user = response.data.user;
+
+          // store token + user info
           localStorage.setItem('token', response.data.token);
-          localStorage.setItem('user', JSON.stringify(response.data.user));
+          localStorage.setItem('user', JSON.stringify(user));
           axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-          navigate('/home');
+
+          // redirect based on role
+          if (user.role === 'Admin') {
+            navigate('/admin');
+          } else {
+            navigate('/home');
+          }
         } else {
           setError('Please enter valid credentials');
         }
@@ -39,13 +56,19 @@ const AuthPage = () => {
         setError('Login failed');
       }
     } else {
-      // Signup
+      // === SIGNUP ===
       if (!name || !email || !password || !phone || !role) {
         setError('Please fill all fields');
         return;
       }
       try {
-        const response = await axios.post('http://localhost:5000/signup', { name, email, password, phone, role });
+        const response = await axios.post('http://localhost:5000/signup', {
+          name,
+          email,
+          password,
+          phone,
+          role,
+        });
         if (response.data.success) {
           setIsLogin(true);
           setError('Signup successful! Please login.');
@@ -64,8 +87,18 @@ const AuthPage = () => {
       <form onSubmit={handleSubmit}>
         {!isLogin && (
           <>
-            <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-            <input type="text" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+            <input
+              type="text"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
             <select value={role} onChange={(e) => setRole(e.target.value)}>
               <option value="Registered Customer">Registered Customer</option>
               <option value="Admin">Admin</option>
@@ -73,8 +106,20 @@ const AuthPage = () => {
             </select>
           </>
         )}
-        <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
         <button type="submit">{isLogin ? 'Login' : 'Signup'}</button>
       </form>
       <button onClick={() => setIsLogin(!isLogin)}>

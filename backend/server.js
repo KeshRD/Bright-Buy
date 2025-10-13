@@ -4,11 +4,13 @@ const cors = require('cors');
 const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const adminRoutes = require('./routes/admin');
 require('dotenv').config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use('/api/admin', adminRoutes);
 
 const pool = new Pool({
   user: process.env.DB_USER,
@@ -256,7 +258,7 @@ app.post('/cart/add', authenticate, async (req, res) => {
   }
 });
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
