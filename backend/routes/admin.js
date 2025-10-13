@@ -299,35 +299,35 @@ router.get("/deliverydrivers", async (req, res) => {
 router.get("/stats/netincome", async (req, res) => {
   try {
     const query = `
-      WITH gross AS (
-        SELECT 
-          COALESCE(SUM(oi.price_at_purchase * oi.quantity), 0) AS gross_income
-        FROM "OrderItem" oi
-        JOIN "Order" o ON oi.order_id = o.order_id
-        JOIN "Payment" p ON o.order_id = p.order_id
-        WHERE LOWER(p.payment_status) = 'paid'
-      ),
-      purchases AS (
-        SELECT 
-          COALESCE(SUM(v.price * t.quantity), 0) AS total_purchases
-        FROM "Transaction" t
-        JOIN "Variant" v ON t.variant_id = v.variant_id
-        WHERE LOWER(t.transaction_type) = 'purchase'
-      )
-      SELECT 
-        gross.gross_income,
-        purchases.total_purchases,
-        (gross.gross_income - purchases.total_purchases) AS net_income
-      FROM gross, purchases;
+      SELECT
+        COALESCE(SUM(
+          CASE 
+            WHEN LOWER(t.transaction_type) = 'sale' 
+              THEN COALESCE(v.price, 0) * COALESCE(t.quantity, 0)
+            ELSE 0 
+          END
+        ), 0) AS gross_income,
+        
+        COALESCE(SUM(
+          CASE 
+            WHEN LOWER(t.transaction_type) = 'purchase' 
+              THEN COALESCE(v.price_at_purchase, 0) * COALESCE(t.quantity, 0)
+            ELSE 0 
+          END
+        ), 0) AS total_purchases
+      FROM "Transaction" t
+      JOIN "Variant" v ON t.variant_id = v.variant_id;
     `;
 
     const result = await pool.query(query);
-    const { gross_income, total_purchases, net_income } = result.rows[0];
+    const grossIncome = Number(result.rows[0].gross_income) || 0;
+    const totalPurchases = Number(result.rows[0].total_purchases) || 0;
+    const netIncome = grossIncome - totalPurchases;
 
     res.json({
-      gross_income: Number(gross_income) || 0,
-      total_purchases: Number(total_purchases) || 0,
-      net_income: Number(net_income) || 0,
+      gross_income: grossIncome,
+      total_purchases: totalPurchases,
+      net_income: netIncome,
     });
   } catch (err) {
     console.error("Net income fetch error:", err.stack);

@@ -131,7 +131,7 @@ const Dashboard = () => {
       const salesRes = await axios.get("http://localhost:5000/api/admin/stats/sales-performance");
       const paymentRes = await axios.get("http://localhost:5000/api/admin/stats/payment-methods");
 
-      setNetIncome(netRes.data.total_income || 0);
+      setNetIncome(netRes.data.net_income || 0);
       setTopProducts(topRes.data || []);
       setSalesData(salesRes.data || []);
 
