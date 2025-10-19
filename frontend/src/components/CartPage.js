@@ -39,6 +39,10 @@ const CartPage = () => {
     if (newQuantity > item.stock_quantity) {
       alert(`Sorry, only ${item.stock_quantity} units are in stock.`);
       return;
+    if (newQuantity < 1) return; // Prevent quantity from being less than 1
+    if (newQuantity > item.stock_quantity) {
+        alert(`Sorry, only ${item.stock_quantity} units are in stock.`);
+        return;
     }
 
     try {
@@ -133,6 +137,7 @@ const CartPage = () => {
     </div>
   );
 };
+
 
 export default CartPage;
 
