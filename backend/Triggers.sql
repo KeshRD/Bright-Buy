@@ -128,7 +128,7 @@ BEGIN
   -- Create a delivery record for ALL new orders,
   -- regardless of delivery mode.
   -- The driver (user_id) is set to NULL by default
-  -- to be assigned later by an Admin.
+  -- Driver chooses the orders he'll deliver
   
   INSERT INTO "Delivery" (
     "order_id", 

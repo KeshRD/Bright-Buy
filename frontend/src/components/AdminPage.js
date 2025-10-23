@@ -899,7 +899,7 @@ const Reports = () => {
   return (
     <div className="bg-white min-h-screen p-6">
       <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
-        � Reports Dashboard
+         Reports Dashboard
       </h2>
       
       <div className="flex gap-4 mb-6 justify-center">
@@ -911,7 +911,7 @@ const Reports = () => {
               : "bg-gray-100 text-gray-600 hover:bg-gray-200"
           }`}
         >
-          Customer Order Summary 📋
+          Customer Order Summary 
         </button>
         <button
           onClick={() => setShowUpcoming(true)}
@@ -921,7 +921,7 @@ const Reports = () => {
               : "bg-gray-100 text-gray-600 hover:bg-gray-200"
           }`}
         >
-          Upcoming Deliveries 🚚
+          Upcoming Deliveries 
         </button>
       </div>
 

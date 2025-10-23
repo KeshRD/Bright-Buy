@@ -11,7 +11,7 @@ const UpcomingDeliveries = () => {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <h2 className="text-2xl font-bold mb-4 text-gray-800 text-center">
-        🚚 Upcoming Deliveries
+        Upcoming Deliveries
       </h2>
       {orders.length === 0 ? (
         <p className="text-gray-600 text-center">No upcoming orders found.</p>

@@ -45,7 +45,7 @@ const CustomerOrderReport = () => {
       setOrders([]);
       return;
     }
-    // ✅ All good
+    //  All good
     setOrders(data);
     if (data.length > 0) setCustomerName(data[0].customer_name);
   } catch (err) {
@@ -60,7 +60,7 @@ const CustomerOrderReport = () => {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
-        🧾 Customer Order Summary & Payment Report
+         Customer Order Summary & Payment Report
       </h2>
       {/* Input Section */}
       <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
@@ -99,7 +99,7 @@ const CustomerOrderReport = () => {
       {/* Show Customer Name */}
       {customerName && (
         <h3 className="text-xl font-semibold text-center text-gray-800 mb-4">
-          🧍‍♂️ Customer: <span className="text-blue-700">{customerName}</span>
+           Customer: <span className="text-blue-700">{customerName}</span>
         </h3>
       )}
       {/* Table */}
